@@ -1,0 +1,16 @@
+com\crawler\storage\JsonStorage.class
+com\crawler\storage\SqliteStorage.class
+com\crawler\gui\MainController$1.class
+com\crawler\Main.class
+com\crawler\core\CrawlerEngine$UrlTask.class
+com\crawler\gui\MainController$2.class
+com\crawler\util\ConsoleDisplay.class
+module-info.class
+com\crawler\gui\MainController.class
+com\crawler\gui\MainController$PageRow.class
+com\crawler\gui\CrawlerApp.class
+com\crawler\model\CrawledPage.class
+com\crawler\model\CrawlerConfig$Builder.class
+com\crawler\model\CrawlerConfig.class
+com\crawler\core\CrawlerEngine.class
+com\crawler\storage\CsvStorage.class

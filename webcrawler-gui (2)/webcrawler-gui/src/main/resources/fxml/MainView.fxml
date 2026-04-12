@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.crawler.gui.MainController"
+            stylesheets="@../css/dark-theme.css"
+            styleClass="root-pane">
+
+    <!-- ══════════ TOP: Header ══════════ -->
+    <top>
+        <VBox styleClass="header-bar">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="🕷" style="-fx-font-size: 28px;"/>
+                <VBox spacing="1">
+                    <Label text="WEB CRAWLER" styleClass="app-title"/>
+                    <Label text="Multi-threaded · CSV · JSON · SQLite" styleClass="app-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="statusLabel" text="● READY" styleClass="status-ready"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ══════════ CENTER: Main content ══════════ -->
+    <center>
+        <SplitPane orientation="HORIZONTAL" dividerPositions="0.32" styleClass="main-split">
+
+            <!-- ── LEFT: Config panel ── -->
+            <ScrollPane fitToWidth="true" styleClass="config-scroll">
+                <VBox styleClass="config-panel" spacing="0">
+
+                    <!-- URL Section -->
+                    <Label text="TARGET URL" styleClass="section-label"/>
+                    <TextField fx:id="urlField"
+                               promptText="https://example.com"
+                               styleClass="url-input"/>
+
+                    <!-- Settings Section -->
+                    <Label text="CRAWL SETTINGS" styleClass="section-label"/>
+
+                    <GridPane styleClass="settings-grid" hgap="10" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <VBox styleClass="field-group" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Max Depth" styleClass="field-label"/>
+                            <Spinner fx:id="depthSpinner" min="0" max="10" initialValue="2" styleClass="config-spinner"/>
+                        </VBox>
+
+                        <VBox styleClass="field-group" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Max Pages" styleClass="field-label"/>
+                            <Spinner fx:id="pagesSpinner" min="1" max="1000" initialValue="50" styleClass="config-spinner"/>
+                        </VBox>
+
+                        <VBox styleClass="field-group" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Threads" styleClass="field-label"/>
+                            <Spinner fx:id="threadsSpinner" min="1" max="20" initialValue="6" styleClass="config-spinner"/>
+                        </VBox>
+
+                        <VBox styleClass="field-group" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Delay (ms)" styleClass="field-label"/>
+                            <Spinner fx:id="delaySpinner" min="0" max="5000" initialValue="300" styleClass="config-spinner"/>
+                        </VBox>
+
+                        <VBox styleClass="field-group" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                            <Label text="Timeout (ms)" styleClass="field-label"/>
+                            <Spinner fx:id="timeoutSpinner" min="1000" max="60000" initialValue="10000" styleClass="config-spinner"/>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- Storage Section -->
+                    <Label text="STORAGE OUTPUT" styleClass="section-label"/>
+                    <VBox styleClass="checkbox-group" spacing="6">
+                        <CheckBox fx:id="csvCheck" text="CSV File" selected="true" styleClass="storage-check"/>
+                        <CheckBox fx:id="jsonCheck" text="JSON File" selected="true" styleClass="storage-check"/>
+                        <CheckBox fx:id="sqliteCheck" text="SQLite Database" selected="true" styleClass="storage-check"/>
+                    </VBox>
+
+                    <!-- Output Dir -->
+                    <Label text="OUTPUT DIRECTORY" styleClass="section-label"/>
+                    <HBox spacing="6">
+                        <TextField fx:id="outputDirField" text="output" styleClass="dir-input" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Action Buttons -->
+                    <VBox styleClass="button-group" spacing="8">
+                        <Button fx:id="startBtn" text="▶  START CRAWL"
+                                onAction="#onStart" styleClass="btn-start"
+                                maxWidth="Infinity"/>
+                        <Button fx:id="stopBtn" text="■  STOP"
+                                onAction="#onStop" styleClass="btn-stop"
+                                maxWidth="Infinity" disable="true"/>
+                        <Button fx:id="clearBtn" text="✕  CLEAR RESULTS"
+                                onAction="#onClear" styleClass="btn-clear"
+                                maxWidth="Infinity"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+
+            <!-- ── RIGHT: Results panel ── -->
+            <VBox styleClass="results-panel" spacing="0">
+
+                <!-- Stats row -->
+                <HBox styleClass="stats-bar" spacing="0">
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="PAGES" styleClass="stat-label"/>
+                        <Label fx:id="statPages" text="0" styleClass="stat-value stat-cyan"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="SUCCESS" styleClass="stat-label"/>
+                        <Label fx:id="statSuccess" text="0" styleClass="stat-value stat-green"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="ERRORS" styleClass="stat-label"/>
+                        <Label fx:id="statErrors" text="0" styleClass="stat-value stat-red"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="LINKS" styleClass="stat-label"/>
+                        <Label fx:id="statLinks" text="0" styleClass="stat-value stat-yellow"/>
+                    </VBox>
+                    <VBox styleClass="stat-box" HBox.hgrow="ALWAYS">
+                        <Label text="ELAPSED" styleClass="stat-label"/>
+                        <Label fx:id="statTime" text="0s" styleClass="stat-value stat-white"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Progress bar -->
+                <ProgressBar fx:id="progressBar" progress="0" maxWidth="Infinity"
+                             styleClass="crawl-progress"/>
+
+                <!-- Tab pane: Log + Table -->
+                <TabPane styleClass="results-tabs" VBox.vgrow="ALWAYS">
+
+                    <Tab text="📋  LIVE LOG" closable="false">
+                        <TextArea fx:id="logArea"
+                                  editable="false"
+                                  wrapText="false"
+                                  styleClass="log-area"
+                                  VBox.vgrow="ALWAYS"/>
+                    </Tab>
+
+                    <Tab text="📊  RESULTS TABLE" closable="false">
+                        <TableView fx:id="resultsTable" styleClass="results-table">
+                            <columns>
+                                <TableColumn fx:id="colDepth"   text="D"      prefWidth="35"  style="-fx-alignment: CENTER;"/>
+                                <TableColumn fx:id="colStatus"  text="HTTP"   prefWidth="55"  style="-fx-alignment: CENTER;"/>
+                                <TableColumn fx:id="colTitle"   text="Title"  prefWidth="200"/>
+                                <TableColumn fx:id="colUrl"     text="URL"    prefWidth="320"/>
+                                <TableColumn fx:id="colLinks"   text="Links"  prefWidth="60"  style="-fx-alignment: CENTER;"/>
+                                <TableColumn fx:id="colTime"    text="ms"     prefWidth="70"  style="-fx-alignment: CENTER;"/>
+                            </columns>
+                        </TableView>
+                    </Tab>
+                </TabPane>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <!-- ══════════ BOTTOM: Status bar ══════════ -->
+    <bottom>
+        <HBox styleClass="bottom-bar" spacing="16">
+            <Label fx:id="bottomStatus" text="Ready to crawl." styleClass="bottom-msg"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Java Web Crawler v1.0" styleClass="bottom-version"/>
+        </HBox>
+    </bottom>
+</BorderPane>
