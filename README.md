@@ -46,7 +46,7 @@ Our system follows a **Producer-Consumer** model implemented with high-level con
 * **Yusuf Yasser Said** - 22100809
 * **Noureen Sayed Rezk** - 22101183
 * **Lojain Wael Mohamed** - 22101063
-* * **mazen ashraf** - 22100105
+* **mazen ashraf** - 22100105
 * **Fares Mohammed** - 22101153
 
 
